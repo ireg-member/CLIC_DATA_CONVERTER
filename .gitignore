@@ -12,3 +12,7 @@ node_modules/
 **/.tmp
 
 .idea
+clic_data_converter/__pycache__/
+venv/
+db.sqlite3
+users/__pycache__/

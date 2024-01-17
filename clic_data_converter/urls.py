@@ -54,4 +54,5 @@ urlpatterns += [
     path("rest-auth/registration/", include("rest_auth.registration.urls")),
 
     path("users/", include("users.urls")),
+    path("social_media/", include("social_media.urls")),
 ]

@@ -44,7 +44,8 @@ class User(AbstractUser):
             if self.image:
                 if "default_profile.png" not in self.image.name:
                     self.image.storage.delete(self.image.name)
-        except Exception as e:print(e)
+        except Exception as e:
+            print(e)
         super(User, self).delete(using=using, keep_parents=keep_parents)
 
     def __str__(self):
@@ -74,6 +75,7 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
     msg.attach_alternative(email_html_message, "text/html")
     msg.send()
 
+
 class UserSignupCode(models.Model):
     email = models.EmailField()
     code = models.CharField(max_length=6)
@@ -82,6 +84,3 @@ class UserSignupCode(models.Model):
 
     class Meta:
         verbose_name_plural = "9- User Code"
-
-
-
