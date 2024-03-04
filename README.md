@@ -24,3 +24,9 @@ To run local server
 ```
 python3 manage.py runserver
 ```
+
+### social_media app
+```angular2html
+create your meta developer account for instagram and facebook posting. Connect the user account 
+with our developer account so that user can post on facebook and instagram using our web application.
+```
