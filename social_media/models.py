@@ -32,3 +32,8 @@ class InstagramConnect(models.Model):
     instagram_id = models.CharField(max_length=256, null=True, blank=True)
     access_token = models.CharField(max_length=512, null=True, blank=True)
     instagram_account_name = models.CharField(max_length=256, null=True, blank=True)
+
+
+class TwitterConnect(models.Model):
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE, null=True, blank=True, related_name='twitter_user')
+    token = models.CharField(max_length=512, null=True, blank=True)

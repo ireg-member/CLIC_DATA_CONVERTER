@@ -1,3 +1,5 @@
+import json
+
 import requests
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -6,7 +8,7 @@ from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_framework.viewsets import ModelViewSet
 
-from social_media.models import FacebookConnect, FacebookPages, InstagramConnect, SocialAccountLinks
+from social_media.models import FacebookConnect, FacebookPages, InstagramConnect, SocialAccountLinks, TwitterConnect
 from social_media.serializers import ConnectSerializer, FacebookConnectSerializer, SocialLinkSerializer
 
 
@@ -100,7 +102,7 @@ class InstagramConnectViewset(APIView):
             else:
                 return Response({"msg": "Please connect your business account."}, status=status.HTTP_200_OK)
             return Response(
-                {"msg": f"Your instagram {account} '{account_title}' has been successfully linked the ONIT Athlete."},
+                {"msg": f"Your instagram {account} '{account_title}' has been successfully linked."},
                 status=status.HTTP_200_OK)
 
     def delete(self, reqeust, *args, **kwargs):
@@ -182,3 +184,26 @@ class UserSocialLinks(ModelViewSet):
 
     def get_queryset(self):
         return self.queryset.filter(user=self.request.user)
+
+
+class UploadTweetView(APIView):
+
+    def post(self, request):
+        twitter_token = TwitterConnect.objects.filter(user=request.user).first()
+        resp = requests.post(
+            url="https://api.twitter.com/2/tweets",
+            data=json.dump({"text": request.data["text"]}),
+            headers={'content-type': 'application/json', 'Authorization': f'Bearer {twitter_token.token}'}
+        )
+        if resp.status_code == 201:
+            return {"success": True, "msg": resp.json().get("data", {}).get("text")}
+        if resp.status_code == 400:
+            if (resp.json()['detail']).startswith('You are not allowed to create'):
+                return {"success": False, "msg": 'This post has already shared on your twitter account.'}
+        if resp.status_code == 401:
+            TwitterConnect.objects.filter(user=self.request.user).delete()
+            facebook_link = SocialAccountLinks.objects.filter(user=self.request.user).first()
+            facebook_link.twitter = False
+            facebook_link.save()
+            return {"success": True, "msg": "Your session has been expired, Please reconnect your twitter account."}
+        return {"success": False, "msg": resp.content}
