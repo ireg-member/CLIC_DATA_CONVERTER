@@ -185,8 +185,6 @@ class ResendUserSignupEmailSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
 
 
-
-
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
     def validate(self, attrs):
@@ -203,4 +201,6 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
                 return "Please verify your email first!"
 
 
+class UniqueUsernameSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=50)
 

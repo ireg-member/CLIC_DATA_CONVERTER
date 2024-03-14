@@ -7,7 +7,8 @@ from users.views import (
     UserProfileViewSet,
     VerifyUserSignupCodeViewSet,
     ResendSignupUserEmailViewSet,
-    CustomTokenObtainPairView
+    CustomTokenObtainPairView,
+    UniqueUsername
 )
 
 router = DefaultRouter()
@@ -23,5 +24,6 @@ urlpatterns = [
     path('resend-email/', ResendSignupUserEmailViewSet.as_view(), name='resend-email'),
     path('forgot-password/', include('django_rest_passwordreset.urls', namespace='password_reset')),
     path('password/change/', PasswordChangeView.as_view(), name='rest_password_change'),
+    path('unique_username/', UniqueUsername.as_view(), name='unique_username'),
 
 ]

@@ -27,6 +27,10 @@ class User(AbstractUser):
     dob = models.DateField(null=True, blank=True)
     gender = models.CharField(choices=(("male", "Male"), ("female", "Female"), ("other", "Other")), max_length=20)
     image = models.ImageField(upload_to="profile/", default="default_profile.png", null=True, blank=True)
+    email = models.EmailField(unique=True, max_length=100)
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ["username"]
 
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.username})
@@ -37,7 +41,7 @@ class User(AbstractUser):
         super(User, self).save(*args, **kwargs)
 
     class Meta:
-        verbose_name_plural = "7- Users"
+        verbose_name_plural = "Users"
 
     def delete(self, using=None, keep_parents=False):
         try:
@@ -83,4 +87,4 @@ class UserSignupCode(models.Model):
     created = models.DateTimeField(auto_now_add=True, editable=False)
 
     class Meta:
-        verbose_name_plural = "9- User Code"
+        verbose_name_plural = "User Code"

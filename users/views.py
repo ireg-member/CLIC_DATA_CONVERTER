@@ -24,7 +24,7 @@ from users.serializers import (
     UserProfileSerializer,
     VerifyUserSignupCodeSerializer,
     CustomTokenObtainPairSerializer,
-    ResendUserSignupEmailSerializer
+    ResendUserSignupEmailSerializer, UniqueUsernameSerializer
 )
 # from users.api.v2.serializers import SignupSerializerV2
 from users.models import get_random_str, UserSignupCode
@@ -177,4 +177,15 @@ class UserProfileViewSet(ModelViewSet):
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+
+class UniqueUsername(APIView):
+
+    def post(self, request):
+        serializer = UniqueUsernameSerializer(data=request.data)
+        if serializer.is_valid():
+            user = User.objects.filter(username=serializer.validated_data['username']).exists()
+            if user:
+                return Response({"response": "username already taken!"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_200_OK)
+        return Response({"response": "chose a valid username!"}, status=status.HTTP_400_BAD_REQUEST)
 
