@@ -16,12 +16,10 @@ class FacebookConnectViewset(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, *args, **kwargs):
-        user_token = self.request.query_params.get('user_token', None)
         fb_access_token = self.request.query_params.get('access_token', None)
         fb_user_id = self.request.query_params.get('fb_user_id', None)
-        if fb_user_id and user_token and fb_access_token:
-            token = Token.objects.get(key=user_token)
-            user = token.user
+        if fb_user_id and fb_access_token and self.request.user:
+            user = self.request.user
             endpoint = f"https://graph.facebook.com/{fb_user_id}/accounts?access_token={fb_access_token}"
             reqeust = requests.get(endpoint)
             pages_ids = []
